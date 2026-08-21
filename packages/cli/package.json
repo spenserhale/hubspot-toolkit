@@ -1,0 +1,23 @@
+{
+  "name": "@hubspot-toolkit/cli",
+  "version": "0.1.0",
+  "type": "module",
+  "bin": {
+    "hubspot": "src/bin.ts"
+  },
+  "scripts": {
+    "dev": "bun run src/bin.ts",
+    "build": "bun build ./src/bin.ts --outdir ./dist --target node",
+    "test": "bun test",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@hubspot-toolkit/sdk": "workspace:*",
+    "@stricli/core": "^1.0.0",
+    "@toon-format/toon": "^2.3.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0",
+    "@types/bun": "latest"
+  }
+}
