@@ -16,6 +16,11 @@ import { createAssociationCommand } from "./commands/associations/create.js";
 import { deleteAssociationCommand } from "./commands/associations/delete.js";
 import { agentContextCommand } from "./commands/agent-context.js";
 import { upgradeCommand } from "./commands/upgrade.js";
+import { authSetCommand } from "./commands/auth/set.js";
+import { authListCommand } from "./commands/auth/list.js";
+import { authDeleteCommand } from "./commands/auth/delete.js";
+import { authMigrateCommand } from "./commands/auth/migrate.js";
+import { showConfigCommand } from "./commands/config/show.js";
 
 const objectsRoutes = buildRouteMap({
   routes: {
@@ -56,8 +61,25 @@ const associationsRoutes = buildRouteMap({
   },
 });
 
+const authRoutes = buildRouteMap({
+  routes: {
+    set: authSetCommand,
+    list: authListCommand,
+    delete: authDeleteCommand,
+    migrate: authMigrateCommand,
+  },
+  docs: { brief: "Store, list, delete, and migrate credentials in the OS keychain" },
+});
+
+const configRoutes = buildRouteMap({
+  routes: { show: showConfigCommand },
+  docs: { brief: "Inspect resolved configuration (secrets redacted)" },
+});
+
 const routes = buildRouteMap({
   routes: {
+    auth: authRoutes,
+    config: configRoutes,
     objects: objectsRoutes,
     properties: propertiesRoutes,
     associations: associationsRoutes,
@@ -72,6 +94,6 @@ const routes = buildRouteMap({
 export const app = buildApplication(routes, {
   name: "hubspot",
   versionInfo: {
-    currentVersion: "0.1.0",
+    currentVersion: "0.2.0",
   },
 });

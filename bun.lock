@@ -11,7 +11,7 @@
     },
     "packages/cli": {
       "name": "@hubspot-toolkit/cli",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "bin": {
         "hubspot": "src/bin.ts",
       },
@@ -27,7 +27,7 @@
     },
     "packages/mcp": {
       "name": "@hubspot-toolkit/mcp",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "dependencies": {
         "@hubspot-toolkit/sdk": "workspace:*",
         "@toon-format/toon": "^2.3.0",
@@ -41,7 +41,7 @@
     },
     "packages/sdk": {
       "name": "@hubspot-toolkit/sdk",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "dependencies": {
         "zod": "^3.24.0",
       },

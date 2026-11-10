@@ -12,7 +12,7 @@ export function registerAssociationTools(server: FastMCP): void {
       toObjectType: z.string(),
     }),
     annotations: { readOnlyHint: true },
-    execute: async (args) => toonText(await makeClient().listAssociations(args.fromObjectType, args.fromObjectId, args.toObjectType)),
+    execute: async (args) => toonText(await (await makeClient()).listAssociations(args.fromObjectType, args.fromObjectId, args.toObjectType)),
   });
 
   server.addTool({
@@ -26,7 +26,7 @@ export function registerAssociationTools(server: FastMCP): void {
     }),
     annotations: { readOnlyHint: false },
     execute: async (args) => {
-      await makeClient().createAssociation(args.fromObjectType, args.fromObjectId, args.toObjectType, args.toObjectId);
+      await (await makeClient()).createAssociation(args.fromObjectType, args.fromObjectId, args.toObjectType, args.toObjectId);
       return toonText({ associated: true, ...args });
     },
   });
@@ -42,7 +42,7 @@ export function registerAssociationTools(server: FastMCP): void {
     }),
     annotations: { readOnlyHint: false, destructiveHint: true },
     execute: async (args) => {
-      await makeClient().deleteAssociation(args.fromObjectType, args.fromObjectId, args.toObjectType, args.toObjectId);
+      await (await makeClient()).deleteAssociation(args.fromObjectType, args.fromObjectId, args.toObjectType, args.toObjectId);
       return toonText({ disassociated: true, ...args });
     },
   });

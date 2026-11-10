@@ -6,6 +6,7 @@ MCP server for HubSpot CRM, built with [FastMCP](https://github.com/punkpeye/fas
 
 | Tool | Description |
 |------|-------------|
+| `hubspot_config_status` | Whether `HUBSPOT_ACCESS_TOKEN` is configured, which source supplied it, and the keychain status. Never returns values. |
 | `hubspot_list_objects` | List objects of a type, paginated |
 | `hubspot_get_object` | Get a single object by ID |
 | `hubspot_create_object` | Create a new object |
@@ -24,23 +25,32 @@ MCP server for HubSpot CRM, built with [FastMCP](https://github.com/punkpeye/fas
 
 `objectType` accepts any HubSpot CRM object: `contacts`, `companies`, `deals`, `tickets`, or a custom object's name/typeId.
 
+There is deliberately no tool that writes or deletes secrets.
+
 ## Setup with Claude Desktop
 
-Add this to your Claude Desktop config (`~/Library/Application Support/Claude/claude_desktop_config.json`):
+Store the token once in the OS keychain:
+
+```bash
+hubspot auth set hubspot      # or: bun run dev:cli -- auth set hubspot
+```
+
+Then add the server with no `env` block (`~/Library/Application Support/Claude/claude_desktop_config.json`):
 
 ```json
 {
   "mcpServers": {
-    "hubspot-toolkit": {
+    "hubspot": {
       "command": "bun",
-      "args": ["run", "/absolute/path/to/hubspot-toolkit/packages/mcp/src/index.ts"],
-      "env": {
-        "HUBSPOT_ACCESS_TOKEN": "your-private-app-token-here"
-      }
+      "args": ["run", "/absolute/path/to/hubspot-toolkit/packages/mcp/src/index.ts"]
     }
   }
 }
 ```
+
+The server reads the keychain on every tool call, so `hubspot auth set` takes effect without restarting the host. On macOS, the first read from a GUI host can show a "wants to use your confidential information" dialog; choose **Always Allow**.
+
+An `env` block with `HUBSPOT_ACCESS_TOKEN` still works and takes precedence over the keychain. Set `HUBSPOT_KEYCHAIN=0` there to skip the keychain entirely.
 
 ## Development
 
@@ -50,4 +60,7 @@ bun run dev
 
 # Inspect with FastMCP inspector
 bun run inspect
+
+# Tests spawn the server with HUBSPOT_KEYCHAIN=0
+bun test
 ```

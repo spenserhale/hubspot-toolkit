@@ -22,7 +22,7 @@ export function registerObjectTools(server: FastMCP): void {
     annotations: { readOnlyHint: true },
     execute: async (args) =>
       toonText(
-        await makeClient().listObjects(args.objectType, {
+        await (await makeClient()).listObjects(args.objectType, {
           limit: args.limit,
           after: args.after,
           properties: args.properties,
@@ -45,7 +45,7 @@ export function registerObjectTools(server: FastMCP): void {
     annotations: { readOnlyHint: true },
     execute: async (args) =>
       toonText(
-        await makeClient().getObject(args.objectType, args.id, {
+        await (await makeClient()).getObject(args.objectType, args.id, {
           properties: args.properties,
           associations: args.associations,
           idProperty: args.idProperty,
@@ -72,7 +72,7 @@ export function registerObjectTools(server: FastMCP): void {
     annotations: { readOnlyHint: false },
     execute: async (args) => {
       const input: CreateObjectInput = { properties: args.properties, associations: args.associations };
-      return toonText(await makeClient().createObject(args.objectType, input));
+      return toonText(await (await makeClient()).createObject(args.objectType, input));
     },
   });
 
@@ -87,7 +87,7 @@ export function registerObjectTools(server: FastMCP): void {
     }),
     annotations: { readOnlyHint: false },
     execute: async (args) =>
-      toonText(await makeClient().updateObject(args.objectType, args.id, args.properties, { idProperty: args.idProperty })),
+      toonText(await (await makeClient()).updateObject(args.objectType, args.id, args.properties, { idProperty: args.idProperty })),
   });
 
   server.addTool({
@@ -100,7 +100,7 @@ export function registerObjectTools(server: FastMCP): void {
     }),
     annotations: { readOnlyHint: false, destructiveHint: true },
     execute: async (args) => {
-      await makeClient().archiveObject(args.objectType, args.id, { idProperty: args.idProperty });
+      await (await makeClient()).archiveObject(args.objectType, args.id, { idProperty: args.idProperty });
       return toonText({ archived: args.id, objectType: args.objectType });
     },
   });
@@ -123,7 +123,7 @@ export function registerObjectTools(server: FastMCP): void {
     annotations: { readOnlyHint: true },
     execute: async (args) =>
       toonText(
-        await makeClient().searchObjects(args.objectType, {
+        await (await makeClient()).searchObjects(args.objectType, {
           query: args.query,
           filterGroups: args.filterGroups as SearchFilterGroup[] | undefined,
           sorts: args.sorts as SearchSort[] | undefined,
@@ -142,7 +142,7 @@ export function registerObjectTools(server: FastMCP): void {
       inputs: z.array(z.object({ properties: z.record(z.string(), z.string()) })),
     }),
     annotations: { readOnlyHint: false },
-    execute: async (args) => toonText(await makeClient().batchCreateObjects(args.objectType, args.inputs as CreateObjectInput[])),
+    execute: async (args) => toonText(await (await makeClient()).batchCreateObjects(args.objectType, args.inputs as CreateObjectInput[])),
   });
 
   server.addTool({
@@ -156,7 +156,7 @@ export function registerObjectTools(server: FastMCP): void {
     }),
     annotations: { readOnlyHint: true },
     execute: async (args) =>
-      toonText(await makeClient().batchReadObjects(args.objectType, args.ids, { properties: args.properties, idProperty: args.idProperty })),
+      toonText(await (await makeClient()).batchReadObjects(args.objectType, args.ids, { properties: args.properties, idProperty: args.idProperty })),
   });
 
   server.addTool({
@@ -167,7 +167,7 @@ export function registerObjectTools(server: FastMCP): void {
       inputs: z.array(z.object({ id: z.string(), properties: z.record(z.string(), z.string()) })),
     }),
     annotations: { readOnlyHint: false },
-    execute: async (args) => toonText(await makeClient().batchUpdateObjects(args.objectType, args.inputs as BatchUpdateInputItem[])),
+    execute: async (args) => toonText(await (await makeClient()).batchUpdateObjects(args.objectType, args.inputs as BatchUpdateInputItem[])),
   });
 
   server.addTool({
@@ -179,7 +179,7 @@ export function registerObjectTools(server: FastMCP): void {
     }),
     annotations: { readOnlyHint: false, destructiveHint: true },
     execute: async (args) => {
-      await makeClient().batchArchiveObjects(args.objectType, args.ids);
+      await (await makeClient()).batchArchiveObjects(args.objectType, args.ids);
       return toonText({ archived: args.ids, objectType: args.objectType });
     },
   });

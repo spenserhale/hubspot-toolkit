@@ -1,6 +1,6 @@
 import { buildCommand } from "@stricli/core";
 import { HubspotClient } from "@hubspot-toolkit/sdk";
-import { resolveConfigOrExit, handleError } from "../../handle-error.js";
+import { loadConfigOrExit, handleError } from "../../handle-error.js";
 import { outputFlags, formatOutput } from "../../output.js";
 import type { OutputFlags } from "../../output.js";
 
@@ -18,7 +18,7 @@ export const getPropertyCommand = buildCommand({
   },
   async func(this: void, flags: OutputFlags, objectType: string, propertyName: string) {
     try {
-      const client = new HubspotClient(resolveConfigOrExit());
+      const client = new HubspotClient(await loadConfigOrExit());
       const result = await client.getProperty(objectType, propertyName);
       console.log(formatOutput(result, flags));
     } catch (err) {

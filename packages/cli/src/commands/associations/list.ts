@@ -1,6 +1,6 @@
 import { buildCommand } from "@stricli/core";
 import { HubspotClient } from "@hubspot-toolkit/sdk";
-import { resolveConfigOrExit, handleError } from "../../handle-error.js";
+import { loadConfigOrExit, handleError } from "../../handle-error.js";
 import { outputFlags, formatOutput } from "../../output.js";
 import type { OutputFlags } from "../../output.js";
 
@@ -19,7 +19,7 @@ export const listAssociationsCommand = buildCommand({
   },
   async func(this: void, flags: OutputFlags, fromObjectType: string, fromObjectId: string, toObjectType: string) {
     try {
-      const client = new HubspotClient(resolveConfigOrExit());
+      const client = new HubspotClient(await loadConfigOrExit());
       const result = await client.listAssociations(fromObjectType, fromObjectId, toObjectType);
       console.log(formatOutput(result, flags));
     } catch (err) {

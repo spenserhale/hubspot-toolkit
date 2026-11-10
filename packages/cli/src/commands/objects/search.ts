@@ -1,7 +1,7 @@
 import { buildCommand } from "@stricli/core";
 import { HubspotClient } from "@hubspot-toolkit/sdk";
 import type { SearchFilterGroup, SearchSort } from "@hubspot-toolkit/sdk";
-import { resolveConfigOrExit, handleError } from "../../handle-error.js";
+import { loadConfigOrExit, handleError } from "../../handle-error.js";
 import { outputFlags, formatOutput } from "../../output.js";
 import type { OutputFlags } from "../../output.js";
 import { parseCsv, parseJsonFlag } from "../../parse.js";
@@ -41,7 +41,7 @@ export const searchObjectsCommand = buildCommand({
     const sorts = flags.sorts ? parseJsonFlag<SearchSort[]>(flags.sorts, "sorts") : undefined;
 
     try {
-      const client = new HubspotClient(resolveConfigOrExit());
+      const client = new HubspotClient(await loadConfigOrExit());
       const result = await client.searchObjects(objectType, {
         query: flags.query,
         filterGroups,

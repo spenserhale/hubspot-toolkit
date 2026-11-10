@@ -10,7 +10,7 @@ export function registerPropertyTools(server: FastMCP): void {
       objectType: z.string().describe("HubSpot object type: contacts, companies, deals, tickets, or a custom object name"),
     }),
     annotations: { readOnlyHint: true },
-    execute: async (args) => toonText(await makeClient().listProperties(args.objectType)),
+    execute: async (args) => toonText(await (await makeClient()).listProperties(args.objectType)),
   });
 
   server.addTool({
@@ -21,6 +21,6 @@ export function registerPropertyTools(server: FastMCP): void {
       propertyName: z.string().describe("Internal property name, e.g. firstname"),
     }),
     annotations: { readOnlyHint: true },
-    execute: async (args) => toonText(await makeClient().getProperty(args.objectType, args.propertyName)),
+    execute: async (args) => toonText(await (await makeClient()).getProperty(args.objectType, args.propertyName)),
   });
 }

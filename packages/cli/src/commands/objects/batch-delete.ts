@@ -1,6 +1,6 @@
 import { buildCommand } from "@stricli/core";
 import { HubspotClient } from "@hubspot-toolkit/sdk";
-import { resolveConfigOrExit, handleError } from "../../handle-error.js";
+import { loadConfigOrExit, handleError } from "../../handle-error.js";
 import { outputFlags, formatOutput } from "../../output.js";
 import type { OutputFlags } from "../../output.js";
 import { parseCsv } from "../../parse.js";
@@ -34,7 +34,7 @@ export const batchDeleteObjectsCommand = buildCommand({
     }
 
     try {
-      const client = new HubspotClient(resolveConfigOrExit());
+      const client = new HubspotClient(await loadConfigOrExit());
       await client.batchArchiveObjects(objectType, ids);
       console.log(formatOutput({ archived: ids, objectType }, flags));
     } catch (err) {

@@ -1,7 +1,7 @@
 import { buildCommand } from "@stricli/core";
 import { HubspotClient } from "@hubspot-toolkit/sdk";
 import type { CreateObjectInput } from "@hubspot-toolkit/sdk";
-import { resolveConfigOrExit, handleError } from "../../handle-error.js";
+import { loadConfigOrExit, handleError } from "../../handle-error.js";
 import { outputFlags, formatOutput } from "../../output.js";
 import type { OutputFlags } from "../../output.js";
 import { parseJsonFlag } from "../../parse.js";
@@ -41,7 +41,7 @@ export const createObjectCommand = buildCommand({
     }
 
     try {
-      const client = new HubspotClient(resolveConfigOrExit());
+      const client = new HubspotClient(await loadConfigOrExit());
       const result = await client.createObject(objectType, input);
       console.log(formatOutput(result, flags));
     } catch (err) {

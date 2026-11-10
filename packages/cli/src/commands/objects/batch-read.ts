@@ -1,6 +1,6 @@
 import { buildCommand } from "@stricli/core";
 import { HubspotClient } from "@hubspot-toolkit/sdk";
-import { resolveConfigOrExit, handleError } from "../../handle-error.js";
+import { loadConfigOrExit, handleError } from "../../handle-error.js";
 import { outputFlags, formatOutput } from "../../output.js";
 import type { OutputFlags } from "../../output.js";
 import { parseCsv } from "../../parse.js";
@@ -30,7 +30,7 @@ export const batchReadObjectsCommand = buildCommand({
   async func(this: void, flags: BatchReadFlags, objectType: string) {
     const ids = parseCsv(flags.ids) ?? [];
     try {
-      const client = new HubspotClient(resolveConfigOrExit());
+      const client = new HubspotClient(await loadConfigOrExit());
       const result = await client.batchReadObjects(objectType, ids, {
         properties: parseCsv(flags.select),
         idProperty: flags["id-property"],

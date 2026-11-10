@@ -1,6 +1,6 @@
 import { buildCommand } from "@stricli/core";
 import { HubspotClient } from "@hubspot-toolkit/sdk";
-import { resolveConfigOrExit, handleError } from "../../handle-error.js";
+import { loadConfigOrExit, handleError } from "../../handle-error.js";
 import { outputFlags, formatOutput } from "../../output.js";
 import type { OutputFlags } from "../../output.js";
 
@@ -32,7 +32,7 @@ export const deleteObjectCommand = buildCommand({
     }
 
     try {
-      const client = new HubspotClient(resolveConfigOrExit());
+      const client = new HubspotClient(await loadConfigOrExit());
       await client.archiveObject(objectType, id, { idProperty: flags["id-property"] });
       console.log(formatOutput({ archived: id, objectType }, flags));
     } catch (err) {

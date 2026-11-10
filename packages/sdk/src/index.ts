@@ -1,7 +1,41 @@
 export { HubspotClient } from "./client.js";
-export { resolveConfig } from "./config.js";
+export {
+  resolveConfig,
+  resolveConfigState,
+  loadConfig,
+  loadConfigState,
+  redactedConfig,
+  credentialValue,
+  DEFAULT_BASE_URL,
+} from "./config.js";
+export type {
+  ConfigState,
+  ResolvedConfig,
+  ResolveConfigOptions,
+  LoadConfigOptions,
+  KeychainState,
+  RedactedConfig,
+  Env,
+} from "./config.js";
+export {
+  KEYCHAIN_SERVICE,
+  CREDENTIAL_KEYS,
+  CREDENTIAL_RESOURCES,
+  bunSecretStore,
+  readKeychainValues,
+  resourceCredentialKeys,
+  resourceForCredentialKey,
+  errorDetail,
+} from "./secrets.js";
+export type {
+  SecretStore,
+  CredentialResource,
+  KeychainStatus,
+  KeychainReadResult,
+} from "./secrets.js";
 export {
   HubspotError,
+  HubspotConfigError,
   HubspotAuthError,
   HubspotNotFoundError,
   HubspotValidationError,

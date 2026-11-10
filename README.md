@@ -18,8 +18,8 @@ A monorepo containing the SDK, CLI, and MCP server for the HubSpot CRM API. The 
 # Install dependencies
 bun install
 
-# Copy env template and add your private app token
-cp .env.example .env
+# Store your private app token in the OS keychain (hidden prompt)
+bun run dev:cli -- auth set hubspot
 
 # Build all packages
 bun run build
@@ -35,8 +35,34 @@ bun run dev:mcp
 
 This toolkit uses a HubSpot **private app access token** (not OAuth). Create one at
 Settings -> Integrations -> Private Apps in your HubSpot account, and grant the
-`crm.objects.*` (read/write) scopes for whichever object types you need. Set it as
-`HUBSPOT_ACCESS_TOKEN` in `.env`.
+`crm.objects.*` (read/write) scopes for whichever object types you need.
+
+Recommended: store it once in the OS keychain (macOS Keychain, Linux libsecret, Windows
+Credential Manager) via `Bun.secrets`. Both the CLI and the MCP server find it with no `.env`
+and no MCP `env` block:
+
+```bash
+hubspot auth set hubspot                                   # hidden prompt
+pbpaste | hubspot auth set hubspot --stdin                 # non-interactive
+op read 'op://Private/HubSpot/access-token' | hubspot auth set hubspot --stdin
+hubspot auth list                                          # keychain state + active source, never values
+hubspot auth migrate                                       # copy a .env token into the keychain
+hubspot config show                                        # resolved config, secrets redacted
+```
+
+Precedence is process env > nearest `.env` > OS keychain, so `HUBSPOT_ACCESS_TOKEN` in the
+environment or a `.env` file still works and wins. Set `HUBSPOT_KEYCHAIN=0` to skip the keychain.
+The token is never accepted as a command-line argument. See
+[docs/guides/configuration.md](./docs/guides/configuration.md) and
+[docs/guides/security.md](./docs/guides/security.md).
+
+SDK consumers: `await loadConfig()` resolves env, `.env` and the keychain;
+`resolveConfig()` stays synchronous and skips the keychain.
+
+```ts
+import { HubspotClient, loadConfig } from "@hubspot-toolkit/sdk";
+const client = new HubspotClient(await loadConfig());
+```
 
 ## CLI Usage
 
@@ -72,6 +98,10 @@ hubspot properties list contacts
 # Associations
 hubspot associations list contacts 12345 companies
 hubspot associations create contacts 12345 companies 67890
+
+# Credentials (OS keychain) and resolved config
+hubspot auth list
+hubspot config show
 
 # Machine-readable command catalog
 hubspot agent-context
